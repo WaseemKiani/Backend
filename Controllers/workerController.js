@@ -1,6 +1,7 @@
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Worker = require("./../Models/workerModel");
+const sendToken = require("../utils/jwtToken");
 
 exports.workerSignUp = catchAsyncError(async(req,res,next)=>{
 
@@ -8,15 +9,14 @@ exports.workerSignUp = catchAsyncError(async(req,res,next)=>{
     let role= "worker";
 
 
-    if(!name || !category || !email || !password || !perHourRate || !image){
+    if(!name || !email || !password || !category || !image){
         return next(new ErrorHandler("Fill Data Completely", 404))
     }else{
-        const data = await Worker.create({
-            name, category, email, password, role , perHourRate , image
+        const worker = await Worker.create({
+            name, category, email, password, image
         })
-    res.status(200).json({
-        success: true
-    })
+        
+        sendToken(worker,201,res);
 }
 });
 
@@ -32,3 +32,29 @@ exports.getAllWorkers = catchAsyncError(async(req,res,next)=>{
         user
     })
 });
+
+
+
+exports.loginWorker = catchAsyncError(async (req, res, next) => {
+    const { email, password } = req.body;
+  
+    // checking if user has given password and email both
+  
+    if (!email || !password) {
+      return next(new ErrorHandler("Please Enter Email & Password", 400));
+    }
+  
+    const worker = await Worker.findOne({ email });
+  
+    if (!worker) {
+      return next(new ErrorHandler("Invalid email or password", 401));
+    }
+  
+    const isPasswordMatched = await worker.comparePassword(password);
+  
+    if (!isPasswordMatched) {
+      return next(new ErrorHandler("Invalid email or password", 401));
+    }
+
+    sendToken(worker, 201, res);  
+  });

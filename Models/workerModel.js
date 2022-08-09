@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const workerSchema = mongoose.Schema({
     name:{
@@ -22,7 +24,6 @@ const workerSchema = mongoose.Schema({
     perHourRate:{
         type: Number,
         default: 0,
-        required: true
     },
     role:{
         type: String,
@@ -47,7 +48,21 @@ const workerSchema = mongoose.Schema({
     image:{
         type: String,
     }
-
 })
+
+workerSchema.pre("save", async function(next){
+    if(!this.isModified("password")){
+        next();
+    }
+    this.password = await bcrypt.hash(this.password,10);
+})
+
+workerSchema.methods.getJWTToken = function(){
+    return jwt.sign({id:this._id}, process.env.JWT_SECRET);
+}
+
+workerSchema.methods.comparePassword = async function(enteredPassword){
+    return await bcrypt.compare(enteredPassword,this.password)
+};
 
 module.exports = mongoose.model("Worker",workerSchema);

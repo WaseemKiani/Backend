@@ -10,7 +10,7 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
       width: 150,
       crop: "scale",
     }); */
-  
+    console.log(req.body)
     const { name, email, password } = req.body;
 
     const user = await User.create({
@@ -19,11 +19,8 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
       password,
 
     });
-    const token = user.getJWTToken();
-    res.status(201).json({
-        success:true,
-        token
-    })
+    
+    sendToken(user, 201, res);  
   });
 
 
