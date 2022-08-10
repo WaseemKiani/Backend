@@ -58,3 +58,27 @@ exports.loginWorker = catchAsyncError(async (req, res, next) => {
 
     sendToken(worker, 201, res);  
   });
+
+
+  
+
+  // Logout User
+  exports.logoutWorker = catchAsyncError(async (req, res, next) => {
+    res.cookie("token", null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+    });
+  
+    res.status(200).json({
+      success: true,
+      message: "Logged Out",
+    });
+  });
+
+  
+exports.getUserDetails = catchAsyncError(async (req, res, next) => {
+    res.json({
+        success:true,
+        message:"Cookie Route is Working Fine"
+    })   
+})
