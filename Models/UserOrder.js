@@ -5,17 +5,17 @@ const orderSchema = mongoose.Schema({
         type: String,
         required: [true,"Please Enter Your Name"]
     },
-    contact:{
-        type: Number,
-        required: true
-    },
     address:{
         type: String,
         required: [true,"Please Enter Your Address"]
     },
+    problemDiscription:{
+        type: String,
+        required: [true,"Please Enter Your Problem Discription"]
+    },
     offer:{
         type: Number,
-        required: true
+        required: [true,"Please Enter Your Offer"]
     },
     startDuration:{
         type: Date,
@@ -25,12 +25,12 @@ const orderSchema = mongoose.Schema({
     },
     worker:{
         type: String,
-        required: [true,"Please Enter Your Address"]
+        required: [true,"Please Enter Worker's ID"]
     },
     user:{
         type: mongoose.Schema.ObjectId,
         ref: "User",
-        required: true
+        required: [true,"Please Enter Your Problem Discription"]
     }
 })
 
