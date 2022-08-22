@@ -116,6 +116,25 @@ exports.getUserDetails = catchAsyncError(async (req, res, next) => {
 
 
 
+// Worker Information Update
+
+
+
+exports.updateWorkerProfile = catchAsyncError(async (req, res, next)=>{
+    
+  const {name,category,email,perHourRate,image}= req.body;
+  
+  console.log("I am recieveing data here",name,category,email,perHourRate,image);
+
+  const worker = await Worker.findByIdAndUpdate(req.worker.id,{name,category,email,perHourRate,image});
+  const user = await Worker.findById(req.worker.id);
+  res.status(200).json({
+      user
+  })
+})
+
+
+
 
 
 
